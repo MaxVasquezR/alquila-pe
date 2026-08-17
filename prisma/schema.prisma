@@ -1,0 +1,297 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String    @id @default(uuid())
+  nombre                String
+  apellidos             String
+  dni                   String    @unique
+  telefono              String    @unique
+  email                 String    @unique
+  passwordHash          String
+  dniVerificado         Boolean   @default(false)
+  telefonoVerificado    Boolean   @default(false)
+  kycVerificado         Boolean   @default(false)
+  verificadoEn          DateTime?
+  distrito              String
+  reputacionScore       Float     @default(5.0)
+  reputacionCount       Int       @default(0)
+  alquileresCompletados Int       @default(0)
+  devolucionesOk        Int       @default(0)
+  disputasAbiertas      Int       @default(0)
+  strikes               Int       @default(0)
+  rol                   String    @default("USER")
+  premiumHasta          DateTime?
+  mpCustomerId          String?
+  termsAcceptedAt       DateTime?
+  createdAt             DateTime  @default(now())
+
+  items           Item[]
+  rentalsOwned    Rental[]       @relation("OwnerRentals")
+  rentalsTaken    Rental[]       @relation("RenterRentals")
+  reviewsGiven    Review[]       @relation("ReviewsGiven")
+  reviewsReceived Review[]       @relation("ReviewsReceived")
+  reportsMade     Report[]       @relation("ReportsMade")
+  reportsAgainst  Report[]       @relation("ReportsAgainst")
+  auditLogs       AuditLog[]
+  contactEvents   ContactEvent[]
+  payments        Payment[]
+  otpCodes        OtpCode[]
+  complaints      Complaint[]
+  kycRequests     KycRequest[]
+  notifications   Notification[]
+}
+
+model Item {
+  id                    String    @id @default(uuid())
+  titulo                String
+  descripcion           String
+  categoria             String
+  precioDiaSoles        Float
+  valorEstimadoSoles    Float
+  garantiaSugeridaSoles Float
+  minDias               Int       @default(1)
+  maxDias               Int       @default(14)
+  distrito              String
+  zonaReferencial       String
+  latAprox              Float
+  lngAprox              Float
+  fotos                 String
+  accesorios            String
+  serialOIdentificador  String?
+  disponible            Boolean   @default(true)
+  destacado             Boolean   @default(false)
+  destacadoHasta        DateTime?
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt             DateTime  @default(now())
+  rentals               Rental[]
+
+  @@index([distrito])
+  @@index([categoria])
+  @@index([destacado, destacadoHasta])
+}
+
+model Rental {
+  id                   String   @id @default(uuid())
+  codigo               String   @unique
+  itemId               String
+  item                 Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  ownerId              String
+  owner                User     @relation("OwnerRentals", fields: [ownerId], references: [id])
+  renterId             String
+  renter               User     @relation("RenterRentals", fields: [renterId], references: [id])
+  fechaInicio          DateTime
+  fechaFin             DateTime
+  dias                 Int
+  precioDiaSoles       Float
+  totalSoles           Float
+  garantiaSoles        Float
+  status               String   @default("REQUESTED")
+  mensajeRenter        String?
+  motivoRechazo        String?
+  telefonoDesbloqueado Boolean  @default(false)
+  disputaMotivo        String?
+  puntoEncuentro       String?
+  protocolFeePaid      Boolean  @default(false)
+  escrowStatus         String   @default("NONE")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  actas                Acta[]
+  reviews              Review[]
+  contactEvents        ContactEvent[]
+  payments             Payment[]
+  escrowHolds          EscrowHold[]
+
+  @@index([status])
+  @@index([ownerId])
+  @@index([renterId])
+}
+
+model Acta {
+  id                    String    @id @default(uuid())
+  rentalId              String
+  rental                Rental    @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  tipo                  String
+  conditionGrade        String
+  fotosEvidencia        String
+  checklist             String
+  notas                 String    @default("")
+  ownerFirmadoEn        DateTime?
+  renterFirmadoEn       DateTime?
+  ownerDniUltimos4      String?
+  renterDniUltimos4     String?
+  garantiaEstado        String    @default("HOLD")
+  garantiaMontoRetenido Float     @default(0)
+  createdAt             DateTime  @default(now())
+
+  @@unique([rentalId, tipo])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  rentalId   String
+  rental     Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  fromUserId String
+  fromUser   User     @relation("ReviewsGiven", fields: [fromUserId], references: [id])
+  toUserId   String
+  toUser     User     @relation("ReviewsReceived", fields: [toUserId], references: [id])
+  tipo       String
+  rating     Int
+  comentario String
+  createdAt  DateTime @default(now())
+
+  @@unique([rentalId, tipo])
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  reporterId String
+  reporter   User     @relation("ReportsMade", fields: [reporterId], references: [id])
+  targetId   String
+  target     User     @relation("ReportsAgainst", fields: [targetId], references: [id])
+  itemId     String?
+  rentalId   String?
+  motivo     String
+  detalle    String
+  status     String   @default("OPEN")
+  createdAt  DateTime @default(now())
+}
+
+model ContactEvent {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rentalId  String?
+  rental    Rental?  @relation(fields: [rentalId], references: [id], onDelete: SetNull)
+  itemId    String
+  canal     String
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entidad   String
+  entidadId String
+  metadata  String   @default("{}")
+  ipHash    String?
+  createdAt DateTime @default(now())
+
+  @@index([entidad, entidadId])
+}
+
+model RateLimit {
+  id        String   @id
+  count     Int      @default(0)
+  windowEnd DateTime
+}
+
+model OtpCode {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  telefono  String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, telefono])
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  rentalId        String?
+  rental          Rental?  @relation(fields: [rentalId], references: [id], onDelete: SetNull)
+  itemId          String?
+  tipo            String
+  montoSoles      Float
+  moneda          String   @default("PEN")
+  status          String   @default("PENDING")
+  mpPreferenceId  String?
+  mpPaymentId     String?
+  mpStatus        String?
+  metadata        String   @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([mpPaymentId])
+}
+
+model EscrowHold {
+  id           String    @id @default(uuid())
+  rentalId     String
+  rental       Rental    @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  montoSoles   Float
+  status       String    @default("PENDING")
+  mpPaymentId  String?
+  heldAt       DateTime?
+  releasedAt   DateTime?
+  claimedAt    DateTime?
+  disputeId    String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([rentalId])
+  @@index([status])
+}
+
+model Complaint {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  nombre      String
+  email       String
+  telefono    String
+  tipoDoc     String
+  numDoc      String
+  domicilio   String
+  producto    String
+  monto       Float?
+  descripcion String
+  pedido      String
+  status      String   @default("OPEN")
+  createdAt   DateTime @default(now())
+}
+
+model KycRequest {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  motivo    String
+  status    String   @default("PENDING")
+  notas     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tipo      String
+  titulo    String
+  cuerpo    String
+  link      String?
+  leida     Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, leida])
+}

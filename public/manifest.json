@@ -1,0 +1,25 @@
+{
+  "name": "Alquila",
+  "short_name": "Alquila",
+  "description": "Alquiler de bienes en Lima con protocolo de entrega y devolución",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4F1EA",
+  "theme_color": "#0F3D2E",
+  "lang": "es-PE",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
