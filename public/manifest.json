@@ -1,7 +1,7 @@
 {
   "name": "Alquila",
   "short_name": "Alquila",
-  "description": "Alquiler de bienes en Lima con protocolo de entrega y devolución",
+  "description": "Beta Lima: alquila bienes con protocolo de entrega y devolución",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F4F1EA",

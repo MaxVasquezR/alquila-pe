@@ -17,18 +17,46 @@ const sans = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700"],
 });
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  themeColor: "#0F3D2E",
 };
 
 export const metadata: Metadata = {
-  title: "Alquila · El Airbnb de las cosas en Lima",
+  metadataBase: new URL(appUrl),
+  title: {
+    default: "Alquila · Beta Lima",
+    template: "%s · Alquila",
+  },
   description:
-    "Alquila y arrienda bienes en Lima con DNI verificado, ubicación ofuscada y actas digitales de entrega y devolución.",
+    "Beta pública: alquila y arrienda bienes en Lima con DNI declarado, ubicación ofuscada y actas digitales de entrega y devolución. Publicar es gratis.",
   manifest: "/manifest.json",
   appleWebApp: { capable: true, title: "Alquila" },
+  icons: {
+    icon: "/favicon.png",
+    apple: "/icons/icon-192.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "es_PE",
+    url: "/",
+    siteName: "Alquila",
+    title: "Alquila · Beta Lima",
+    description:
+      "Alquila cosas en Lima con protocolo: identidad declarada, encuentro público y acta digital.",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Alquila Beta Lima" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Alquila · Beta Lima",
+    description:
+      "Alquila cosas en Lima con protocolo: identidad declarada, encuentro público y acta digital.",
+    images: ["/og.png"],
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

@@ -5,14 +5,14 @@ export default function ParaDuenosPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
       <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-700">Programa dueños Lima</p>
-      <h1 className="mt-2 font-display text-3xl sm:text-5xl">Publica gratis. Alquila cierra el protocolo.</h1>
+      <h1 className="mt-2 font-display text-3xl sm:text-5xl">Publica por S/ 9.90. Alquila cierra el protocolo.</h1>
       <p className="mt-4 text-base text-ink-400 sm:text-lg">{WEDGE.ownerPitch}</p>
       <ul className="mt-8 space-y-3 text-sm sm:text-base">
         {[
           WEDGE.garantiaAlquila,
-          "WhatsApp auditado solo tras depósito de garantía — no en el anuncio.",
+          "WhatsApp auditado solo tras aceptar la solicitud — no en el anuncio.",
           "Acta digital de entrega y devolución con fotos y firma DNI.",
-          "Alquiler diario entre ustedes (Yape/Plin). Alquila no cobra comisión del alquiler en Fase 2.",
+          "Alquiler diario entre ustedes (Yape/Plin). Alquila cobra el fee de publicación, no comisión del alquiler.",
         ].map((line) => (
           <li key={line} className="rounded-xl bg-white p-4 shadow-card">
             {line}

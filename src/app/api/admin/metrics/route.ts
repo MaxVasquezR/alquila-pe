@@ -68,6 +68,7 @@ const patchSchema = z.object({
     "resolve_complaint",
     "release_escrow",
     "claim_escrow",
+    "publish_item",
   ]),
   id: z.string(),
   resolution: z.string().optional(),
@@ -84,6 +85,8 @@ export async function PATCH(req: Request) {
 
   if (action === "resolve_report") {
     await prisma.report.update({ where: { id }, data: { status: "RESOLVED" } });
+  } else if (action === "publish_item") {
+    await prisma.item.update({ where: { id }, data: { publicado: true } });
   } else if (action === "resolve_complaint") {
     await prisma.complaint.update({ where: { id }, data: { status: "RESOLVED" } });
   } else if (action === "release_escrow") {

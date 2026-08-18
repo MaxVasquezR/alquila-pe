@@ -39,6 +39,15 @@ export async function fulfillPayment(paymentId: string, mpPaymentId?: string) {
   });
 
   switch (payment.tipo as PaymentProduct) {
+    case "LISTING_FEE": {
+      if (payment.itemId) {
+        await prisma.item.update({
+          where: { id: payment.itemId },
+          data: { publicado: true },
+        });
+      }
+      break;
+    }
     case "BUMP_STANDARD":
     case "BUMP_PREMIUM": {
       if (!payment.itemId) break;

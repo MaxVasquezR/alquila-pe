@@ -66,6 +66,7 @@ model Item {
   accesorios            String
   serialOIdentificador  String?
   disponible            Boolean   @default(true)
+  publicado             Boolean   @default(false)
   destacado             Boolean   @default(false)
   destacadoHasta        DateTime?
   userId                String
@@ -75,6 +76,7 @@ model Item {
 
   @@index([distrito])
   @@index([categoria])
+  @@index([publicado])
   @@index([destacado, destacadoHasta])
 }
 

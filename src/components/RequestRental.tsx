@@ -69,7 +69,7 @@ export function RequestRental({
         Sin WhatsApp en este paso. Si el dueño acepta, coordinan dentro de Alquila.
         {requiresEscrowGarantia(valorEstimado)
           ? ` ${WEDGE.renterPitch}`
-          : " WhatsApp auditado tras aceptación (modo demo)."}
+          : ` ${WEDGE.whatsappAfterEscrow}`}
       </p>
       {flags.map((f) => (
         <p

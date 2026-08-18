@@ -131,8 +131,8 @@ export function hashIp(ip: string | null) {
 
 export const SCAM_WARNINGS = [
   "Nunca pagues el 100% por adelantado a Yape/Plin de un desconocido.",
-  "Deposita la garantía en Alquila antes de WhatsApp — nunca Yapees garantía directo al dueño.",
-  "El celular del dueño no está en el anuncio. Solo WhatsApp auditado dentro del intercambio.",
+  "La garantía se acuerda en el encuentro (zona pública) y queda en el acta. No transfieras “por adelantado para reservar”.",
+  "El celular del dueño no está en el anuncio. Solo WhatsApp auditado dentro del intercambio, tras aceptación.",
   "Si te piden la dirección exacta por chat, denuncia y no la des.",
   "Compara el DNI físico con el perfil (últimos 4 dígitos) en el encuentro.",
   "No entregues el bien sin fotos, checklist y firma de ambas partes.",

@@ -1,5 +1,5 @@
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import { PRICING, mercadoPagoConfigured, type PaymentProduct } from "./config";
+import { PRICING, mercadoPagoConfigured, paymentsDemoMode, type PaymentProduct } from "./config";
 
 let client: MercadoPagoConfig | null = null;
 
@@ -29,6 +29,9 @@ export async function createCheckoutPreference(input: CheckoutItem) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
   if (!mp) {
+    if (!paymentsDemoMode()) {
+      throw new Error("Mercado Pago no está configurado.");
+    }
     return {
       demo: true,
       initPoint: `${baseUrl}/pagos/demo?ref=${encodeURIComponent(input.externalReference)}&product=${input.product}`,
@@ -70,6 +73,8 @@ export async function createCheckoutPreference(input: CheckoutItem) {
 
 export function productPricing(product: PaymentProduct): { soles: number; title: string } {
   switch (product) {
+    case "LISTING_FEE":
+      return { soles: PRICING.listing.soles, title: PRICING.listing.label };
     case "BUMP_STANDARD":
       return { soles: PRICING.bump.standard.soles, title: PRICING.bump.standard.label };
     case "BUMP_PREMIUM":

@@ -95,7 +95,9 @@ export function RentalActions({
             </button>
           </div>
           <p className="text-xs text-ink-400">
-            Tras aceptar, el arrendatario deposita la garantía en Alquila. Luego WhatsApp y entrega.
+            {escrowRequired
+              ? "Tras aceptar, el arrendatario deposita la garantía en Alquila. Luego WhatsApp y entrega."
+              : "Tras aceptar se desbloquea WhatsApp auditado para coordinar el encuentro público y el acta."}
           </p>
         </div>
       )}

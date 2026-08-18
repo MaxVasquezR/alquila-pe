@@ -171,6 +171,7 @@ async function main() {
       accesorios: JSON.stringify(["Maletín", "8 brocas", "Empuñadura auxiliar"]),
       serialOIdentificador: "GSB13-OLIVOS-01",
       destacado: true,
+      publicado: true,
       userId: carlos.id,
     },
   });
@@ -190,6 +191,7 @@ async function main() {
       ...loc("Los Olivos"),
       fotos: JSON.stringify(pickPhotos("Generador eléctrico 3.5 kW", "herramientas")),
       accesorios: JSON.stringify(["Extensión 10 m", "Embudo", "Manual"]),
+      publicado: true,
       userId: carlos.id,
     },
   });
@@ -211,6 +213,7 @@ async function main() {
       accesorios: JSON.stringify(["20 sillas", "2 manteles"]),
       destacado: true,
       disponible: false,
+      publicado: true,
       userId: maria.id,
     },
   });
@@ -230,6 +233,7 @@ async function main() {
       ...loc("San Miguel"),
       fotos: JSON.stringify(pickPhotos("Mesa rectangular para 10 personas", "eventos")),
       accesorios: JSON.stringify(["Mesa", "Funda"]),
+      publicado: true,
       userId: maria.id,
     },
   });
@@ -251,6 +255,7 @@ async function main() {
       accesorios: JSON.stringify(["Body A7 III", "Lente 28-70", "2 baterías", "Cargador"]),
       serialOIdentificador: "A7III-MIRA-09",
       destacado: true,
+      publicado: true,
       userId: diego.id,
     },
   });
@@ -270,6 +275,7 @@ async function main() {
       ...loc("Miraflores"),
       fotos: JSON.stringify(pickPhotos("PlayStation 5 consola", "tecnologia")),
       accesorios: JSON.stringify(["Consola", "2 mandos", "HDMI", "Corriente"]),
+      publicado: true,
       userId: diego.id,
     },
   });
@@ -289,6 +295,7 @@ async function main() {
       ...loc("San Martín de Porres"),
       fotos: JSON.stringify(pickPhotos("Proyector Epson ecran", "eventos")),
       accesorios: JSON.stringify(["Proyector", "Ecran", "HDMI 3 m", "Control"]),
+      publicado: true,
       userId: ana.id,
     },
   });

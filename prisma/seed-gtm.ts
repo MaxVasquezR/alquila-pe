@@ -212,6 +212,7 @@ export async function seedGtmOwners(prisma: PrismaClient, passwordHash: string) 
           lngAprox: loc.lngAprox,
           fotos: photosJson(it.titulo, it.categoria),
           accesorios: JSON.stringify(["Accesorios estándar"]),
+          publicado: true,
           userId: user.id,
         },
       });

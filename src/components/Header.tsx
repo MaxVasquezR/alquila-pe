@@ -33,7 +33,7 @@ export function Header({ user, isAdmin }: { user: PublicUser | null; isAdmin?: b
             Alquila
           </span>
           <span className="hidden text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-700 sm:inline">
-            Lima · Perú
+            Beta Lima
           </span>
         </Link>
 

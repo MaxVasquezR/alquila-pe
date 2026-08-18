@@ -3,6 +3,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+      { protocol: "https", hostname: "*.r2.dev", pathname: "/**" },
+      { protocol: "https", hostname: "*.r2.cloudflarestorage.com", pathname: "/**" },
+      { protocol: "https", hostname: "*.amazonaws.com", pathname: "/**" },
+      { protocol: "https", hostname: "*.s3.amazonaws.com", pathname: "/**" },
     ],
   },
 };

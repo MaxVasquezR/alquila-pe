@@ -5,6 +5,7 @@ import { parseJsonArray, maskDni } from "@/lib/validations";
 import { soles, solesShort } from "@/lib/utils";
 import { riskForOwner, riskForRenter, SCAM_WARNINGS } from "@/lib/security";
 import { requiresEscrowGarantia, WEDGE } from "@/lib/business-rules";
+import { paymentsEnabled } from "@/lib/payments/config";
 import { SecurityBadge } from "@/components/SecurityBadge";
 import { VerifiedExchangeBadge } from "@/components/VerifiedExchangeBadge";
 import { RequestRental } from "@/components/RequestRental";
@@ -12,7 +13,7 @@ import { CATEGORIAS, puntosSeguros } from "@/lib/peru";
 import { MapPin, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { LocationMap } from "@/components/LocationMapClient";
-import { BoostButton } from "@/components/PaymentButtons";
+import { BoostButton, ListingPayButton } from "@/components/PaymentButtons";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,8 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
   });
   if (!item) notFound();
   const me = await getSessionUser();
+  const isOwner = me?.id === item.userId;
+  if (!item.publicado && !isOwner) notFound();
   const fotos = parseJsonArray(item.fotos);
   const accesorios = parseJsonArray(item.accesorios);
   const cat = CATEGORIAS.find((c) => c.id === item.categoria)?.label ?? item.categoria;
@@ -30,13 +33,13 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
     ...riskForOwner(item.user, item),
     ...(me ? riskForRenter(me) : []),
   ];
-  const isOwner = me?.id === item.userId;
-  const canRequest = Boolean(me && canTransact(me) && !isOwner && item.disponible);
+  const canRequest = Boolean(me && canTransact(me) && !isOwner && item.disponible && item.publicado);
   let blockReason: string | undefined;
   if (!me) blockReason = "Inicia sesión y verifica tu DNI para solicitar.";
   else if (isOwner) blockReason = "Este es tu anuncio.";
   else if (!canTransact(me)) blockReason = "Verifica DNI y celular para solicitar.";
   else if (!item.disponible) blockReason = "Este bien está en un alquiler activo.";
+  else if (!item.publicado) blockReason = "Este anuncio aún no está publicado (pago pendiente).";
 
   return (
     <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[1.4fr_0.8fr]">
@@ -131,18 +134,34 @@ export default async function ItemDetailPage({ params }: { params: { id: string 
             desbloquea <strong>dentro del intercambio</strong>.
             {requiresEscrowGarantia(item.valorEstimadoSoles)
               ? " Primero depositas la garantía en Alquila, luego WhatsApp auditado."
-              : " WhatsApp disponible tras aceptación (modo demo sin escrow)."}
+              : " WhatsApp auditado tras la aceptación del dueño."}
           </p>
         </div>
         {isOwner ? (
           <div className="space-y-3 rounded-2xl bg-white p-5 shadow-card">
-            <Link href="/alquileres" className="block text-sm font-semibold">
-              Ver solicitudes de este bien →
-            </Link>
-            <div className="flex flex-wrap gap-2">
-              <BoostButton itemId={item.id} />
-              <BoostButton itemId={item.id} premium />
-            </div>
+            {!item.publicado ? (
+              <div className="rounded-xl bg-gold-200/40 p-3 text-sm">
+                <p className="font-bold text-ink-950">Pago pendiente</p>
+                <p className="mt-1 text-ink-600">
+                  Este anuncio no es público hasta pagar el fee de publicación.
+                </p>
+                <div className="mt-3">
+                  <ListingPayButton itemId={item.id} />
+                </div>
+              </div>
+            ) : (
+              <>
+                <Link href="/alquileres" className="block text-sm font-semibold">
+                  Ver solicitudes de este bien →
+                </Link>
+                {paymentsEnabled() ? (
+                  <div className="flex flex-wrap gap-2">
+                    <BoostButton itemId={item.id} />
+                    <BoostButton itemId={item.id} premium />
+                  </div>
+                ) : null}
+              </>
+            )}
           </div>
         ) : (
           <RequestRental

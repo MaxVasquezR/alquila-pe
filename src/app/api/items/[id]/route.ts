@@ -16,6 +16,7 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 
   const me = await getSessionUser();
   const isOwner = me?.id === item.userId;
+  if (!item.publicado && !isOwner) return jsonError("Anuncio no encontrado", 404);
 
   return NextResponse.json({
     item: {

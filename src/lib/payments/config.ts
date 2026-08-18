@@ -1,8 +1,8 @@
 /**
- * Modelo de pagos escalonado — Plan Maestro Alquila
- * Fase 1: bumps, Premium, fee protocolo (sin custodia de alquiler)
+ * Pagos Alquila
+ * LISTING_FEE: cobro por publicar (encendido con ALQUILA_PAYMENTS_ENABLED=1)
+ * Fase 1: bumps, Premium, fee protocolo
  * Fase 2: escrow garantía
- * Fase 3: escrow alquiler + comisión GMV (feature flag)
  */
 
 export type PaymentPhase = 1 | 2 | 3;
@@ -10,6 +10,7 @@ export type PaymentPhase = 1 | 2 | 3;
 export const PAYMENT_PHASE: PaymentPhase = Number(process.env.ALQUILA_PAYMENT_PHASE ?? "1") as PaymentPhase;
 
 export const PRICING = {
+  listing: { soles: 9.9, label: "Publicar anuncio" },
   bump: {
     standard: { soles: 9.9, dias: 3, label: "Destacado distrito" },
     premium: { soles: 14.9, dias: 3, label: "Top 3 distrito" },
@@ -23,26 +24,36 @@ export const PRICING = {
 } as const;
 
 export type PaymentProduct =
+  | "LISTING_FEE"
   | "BUMP_STANDARD"
   | "BUMP_PREMIUM"
   | "PREMIUM_SUBSCRIPTION"
   | "PROTOCOL_FEE"
   | "ESCROW_GARANTIA";
 
+export function paymentsEnabled(): boolean {
+  return process.env.ALQUILA_PAYMENTS_ENABLED === "1";
+}
+
 export function isPhaseEnabled(minPhase: PaymentPhase): boolean {
+  if (!paymentsEnabled()) return false;
   return PAYMENT_PHASE >= minPhase;
 }
 
 export function phaseLabel(): string {
+  if (!paymentsEnabled()) return "Sin cobros de plataforma";
   if (PAYMENT_PHASE >= 3) return "Fase 3 — Escrow completo";
   if (PAYMENT_PHASE >= 2) return "Fase 2 — Escrow garantía";
-  return "Fase 1 — Bumps y Premium";
+  return "Publicar anuncio + destacados";
 }
 
 export function mercadoPagoConfigured(): boolean {
   return Boolean(process.env.MP_ACCESS_TOKEN?.trim());
 }
 
+/** Demo checkout solo en desarrollo local, nunca en producción. */
 export function paymentsDemoMode(): boolean {
-  return !mercadoPagoConfigured();
+  if (process.env.NODE_ENV === "production") return false;
+  if (paymentsEnabled() && mercadoPagoConfigured()) return false;
+  return true;
 }

@@ -2,18 +2,27 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
 import { createCheckoutPreference, productPricing } from "@/lib/payments/mercadopago";
 import { recordPendingPayment } from "@/lib/payments/fulfillment";
-import { isPhaseEnabled, paymentsDemoMode, type PaymentProduct } from "@/lib/payments/config";
+import { isPhaseEnabled, paymentsDemoMode, paymentsEnabled, type PaymentProduct } from "@/lib/payments/config";
 import { prisma } from "@/lib/prisma";
 import { jsonError } from "@/lib/http";
 import { z } from "zod";
 
 const schema = z.object({
-  product: z.enum(["BUMP_STANDARD", "BUMP_PREMIUM", "PREMIUM_SUBSCRIPTION", "PROTOCOL_FEE"]),
+  product: z.enum([
+    "LISTING_FEE",
+    "BUMP_STANDARD",
+    "BUMP_PREMIUM",
+    "PREMIUM_SUBSCRIPTION",
+    "PROTOCOL_FEE",
+  ]),
   itemId: z.string().uuid().optional(),
   rentalId: z.string().uuid().optional(),
 });
 
 export async function POST(req: Request) {
+  if (!paymentsEnabled()) {
+    return jsonError("Los cobros de la plataforma no están activos.", 403);
+  }
   const user = await getSessionUser();
   if (!user) return jsonError("Inicia sesión", 401);
 
@@ -22,8 +31,8 @@ export async function POST(req: Request) {
 
   const { product, itemId, rentalId } = body.data;
 
-  if (product.startsWith("BUMP") && !itemId) {
-    return jsonError("itemId requerido para bump.");
+  if ((product.startsWith("BUMP") || product === "LISTING_FEE") && !itemId) {
+    return jsonError("itemId requerido.");
   }
   if (product === "PREMIUM_SUBSCRIPTION" && user.rol === "PREMIUM_OWNER") {
     return jsonError("Ya tienes Premium activo.");
@@ -32,9 +41,12 @@ export async function POST(req: Request) {
     return jsonError("rentalId requerido para fee protocolo.");
   }
 
-  if (product === "BUMP_STANDARD" || product === "BUMP_PREMIUM") {
+  if (product === "BUMP_STANDARD" || product === "BUMP_PREMIUM" || product === "LISTING_FEE") {
     const item = await prisma.item.findUnique({ where: { id: itemId } });
     if (!item || item.userId !== user.id) return jsonError("Anuncio no encontrado.", 404);
+    if (product === "LISTING_FEE" && item.publicado) {
+      return jsonError("Este anuncio ya está publicado.");
+    }
   }
 
   const { soles, title } = productPricing(product as PaymentProduct);

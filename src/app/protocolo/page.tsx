@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { FileCheck, ShieldCheck, Smartphone, RotateCcw, Lock, Wallet } from "lucide-react";
+import { FileCheck, ShieldCheck, Smartphone, RotateCcw, Lock, MapPinned } from "lucide-react";
 import { WEDGE } from "@/lib/business-rules";
 
 export default function ProtocoloPage() {
   const steps = [
     {
       n: "01",
-      t: "Identidad primero",
-      d: "DNI de 8 dígitos (no secuencial) y celular 9 dígitos. Sin ambos, la cuenta solo puede mirar anuncios.",
+      t: "Identidad declarada",
+      d: "DNI de 8 dígitos y celular 9 dígitos. Sin ambos, la cuenta solo puede mirar anuncios. No es consulta RENIEC: declaras y confirmas tus datos.",
       icon: ShieldCheck,
     },
     {
@@ -19,25 +19,25 @@ export default function ProtocoloPage() {
     {
       n: "03",
       t: "Dueño acepta",
-      d: "Se acuerda punto de encuentro en zona pública. Aún no hay entrega física.",
+      d: "Se acuerda punto de encuentro en zona pública. Recién entonces se desbloquea WhatsApp auditado.",
       icon: FileCheck,
-    },
-    {
-      n: "03b",
-      t: "Garantía en custodia Alquila",
-      d: "El arrendatario deposita la garantía en cuenta Alquila (no Yape al dueño). Recién entonces se desbloquea WhatsApp auditado.",
-      icon: Wallet,
     },
     {
       n: "04",
       t: "WhatsApp auditado",
-      d: "Mensaje con código ALQ y montos. Coordinan encuentro. Alquiler diario: Yape/Plin entre ustedes.",
+      d: "Mensaje con código ALQ y montos. Coordinan encuentro. Alquiler y garantía: Yape/Plin entre ustedes, en persona.",
       icon: Lock,
     },
     {
       n: "05",
+      t: "Encuentro público",
+      d: "Plaza, mall o paradero — nunca domicilio exacto en el anuncio. Comparan DNI físico con el perfil.",
+      icon: MapPinned,
+    },
+    {
+      n: "06",
       t: "Acta de entrega y devolución",
-      d: "Fotos, checklist y firma DNI. Disputa automática si hay daño. Garantía liberada automáticamente al cerrar sin daño grave.",
+      d: "Fotos, checklist y firma con últimos 4 del DNI. El éxito es devolver el bien, no pelear por chat.",
       icon: RotateCcw,
     },
   ];
@@ -45,15 +45,14 @@ export default function ProtocoloPage() {
   const matrix = [
     ["Navegando anuncios", "Ver fotos y mapa ~500 m", "Pedir celular / pagar adelantado"],
     ["Solicitud enviada", "Esperar aceptación", "WhatsApp al dueño"],
-    ["Aceptado", "Depositar garantía en Alquila", "Yapear garantía directo al dueño"],
-    ["Garantía depositada", "WhatsApp auditado", "Dirección exacta por chat"],
-    ["Entrega", "Acta + fotos + DNI", "Entregar sin acta"],
-    ["Devolución OK", "Garantía liberada automáticamente", "Acordar garantía por WhatsApp"],
+    ["Aceptado", "WhatsApp auditado · acordar plaza pública", "Dirección exacta por chat"],
+    ["Entrega", "Acta + fotos + DNI · garantía en el encuentro", "Entregar sin acta / Yape adelantado"],
+    ["Devolución OK", "Cerrar acta de devolución", "Acordar todo solo por WhatsApp"],
   ];
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14">
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-700">El producto no es el anuncio</p>
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-700">Beta Lima · el producto no es el anuncio</p>
       <h1 className="mt-2 font-display text-3xl leading-tight sm:text-5xl">
         El éxito de Alquila es un intercambio que se entrega y se devuelve.
       </h1>
@@ -101,8 +100,8 @@ export default function ProtocoloPage() {
         <ul className="mt-4 list-disc pl-5 text-sm text-forest-100 sm:text-base">
           <li>No mostramos celular en el anuncio (solo WhatsApp auditado en el intercambio).</li>
           <li>No mostramos dirección exacta (anti-extorsión / reglaje).</li>
-          <li>No custodiamos el alquiler diario — Yape/Plin entre partes.</li>
-          <li>Sí retenemos toda garantía en Alquila hasta acta de devolución exitosa.</li>
+          <li>No custodiamos el alquiler diario ni la garantía en esta beta — Yape/Plin entre partes.</li>
+          <li>No consultamos RENIEC: la identidad es declarada y confirmada por el usuario.</li>
         </ul>
         <p className="mt-4 text-sm text-forest-200">{WEDGE.garantiaAlquila}</p>
         <Link href="/" className="mt-6 inline-block rounded-full bg-gold-500 px-5 py-2.5 text-sm font-bold text-ink-950">

@@ -2,12 +2,15 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/auth";
 import { DemoPayButton } from "@/components/DemoPayButton";
+import { paymentsDemoMode } from "@/lib/payments/config";
 
 export default async function DemoPayPage({
   searchParams,
 }: {
   searchParams: { ref?: string; product?: string };
 }) {
+  if (!paymentsDemoMode()) redirect("/");
+
   const user = await getSessionUser();
   if (!user) redirect("/login");
   if (!searchParams.ref) redirect("/");

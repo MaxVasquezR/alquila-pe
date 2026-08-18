@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DEMO_OTP } from "@/lib/peru";
 
 export function VerifyPanel({
   dniMasked,
@@ -83,9 +82,9 @@ export function VerifyPanel({
         )}
       </form>
       <div className="rounded-2xl bg-white p-6 shadow-card">
-        <h2 className="font-display text-2xl">2. Celular / SMS</h2>
+        <h2 className="font-display text-2xl">2. Celular</h2>
         <p className="mt-1 text-sm text-ink-400">
-          Celular {phoneMasked}. OTP por SMS (Twilio) o demo: {DEMO_OTP}.
+          Celular {phoneMasked}. Te enviamos un código por SMS o al correo de la cuenta.
         </p>
         {phoneDone ? (
           <p className="mt-4 font-semibold text-forest-700">Celular verificado.</p>
@@ -96,7 +95,7 @@ export function VerifyPanel({
               onClick={sendOtp}
               className="mt-4 rounded-full bg-gold-500 px-4 py-2 text-sm font-bold text-ink-950"
             >
-              {otpSent ? "Reenviar código" : "Enviar código SMS"}
+              {otpSent ? "Reenviar código" : "Enviar código"}
             </button>
             <form onSubmit={verifyPhone} className="mt-4 space-y-3">
               <input name="telefono" defaultValue={telefono} readOnly className="w-full rounded-xl border bg-ink-50 px-3 py-2" />

@@ -28,14 +28,18 @@ export async function POST(req: Request) {
       action: "OTP_SEND",
       entidad: "User",
       entidadId: user.id,
-      metadata: { demo: result.demo ?? false },
+      metadata: { demo: result.demo ?? false, channel: result.channel },
     });
     return NextResponse.json({
       ok: true,
-      demo: result.demo,
-      message: result.demo
-        ? "Modo demo: usa el código 184729 (configura Twilio para SMS real)."
-        : "Código enviado por SMS.",
+      demo: result.demo ?? false,
+      channel: result.channel,
+      message:
+        result.channel === "sms"
+          ? "Código enviado por SMS."
+          : result.channel === "email"
+            ? "Código enviado a tu correo (SMS no configurado)."
+            : "Modo local: usa el código 184729. En producción se exige Twilio o Resend.",
     });
   } catch (e) {
     return jsonError(e instanceof Error ? e.message : "No se pudo enviar OTP.", 500);

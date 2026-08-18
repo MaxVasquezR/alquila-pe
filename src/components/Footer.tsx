@@ -11,8 +11,8 @@ export function Footer() {
         <div>
           <p className="font-display text-2xl">Alquila</p>
           <p className="mt-2 max-w-sm text-sm text-forest-100">
-            Protocolo de alquiler P2P en Lima. No somos vitrina: cerramos intercambios con acta y{" "}
-            {WEDGE.garantiaAlquila.toLowerCase()}
+            Protocolo de alquiler P2P en Lima. Beta pública: identidad declarada, encuentro en zona
+            pública y acta digital. {WEDGE.alquilerP2P}
           </p>
         </div>
         <div className="text-sm">
@@ -37,17 +37,17 @@ export function Footer() {
             ) : null}
             <li className="text-xs text-forest-200/80">
               El celular del dueño <strong>nunca</strong> aparece aquí. Solo WhatsApp auditado dentro
-              de un intercambio aceptado, tras depositar la garantía en Alquila.
+              de un intercambio aceptado.
             </li>
           </ul>
         </div>
         <div className="text-sm">
           <p className="font-semibold text-gold-400">Operación segura</p>
           <ul className="mt-3 space-y-2 text-forest-100">
-            <li>DNI y celular verificados</li>
+            <li>DNI y celular confirmados (declarados)</li>
             <li>Ubicación ofuscada · ~500 m</li>
-            <li>Garantía en custodia Alquila · WhatsApp tras depósito</li>
-            <li>Acta entrega y devolución · liberación automática</li>
+            <li>WhatsApp tras aceptación · nunca en el anuncio</li>
+            <li>Acta entrega y devolución con fotos</li>
           </ul>
         </div>
         <div className="text-sm">
@@ -87,7 +87,7 @@ export function Footer() {
         </div>
       </div>
       <p className="border-t border-white/10 px-4 py-4 text-center text-xs text-forest-100">
-        Soles (S/.) · Lima Metropolitana ·{" "}
+        Soles (S/.) · Lima Metropolitana · Beta ·{" "}
         <Link href="/legal/reclamaciones" className="underline">
           Libro de reclamaciones
         </Link>

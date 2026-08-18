@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
-import { isPhaseEnabled, PRICING } from "@/lib/payments/config";
+import { isPhaseEnabled, paymentsEnabled, PRICING } from "@/lib/payments/config";
 import { createCheckoutPreference } from "@/lib/payments/mercadopago";
 import { recordPendingPayment } from "@/lib/payments/fulfillment";
 import { prisma } from "@/lib/prisma";
 import { jsonError } from "@/lib/http";
 
 export async function POST(req: Request) {
+  if (!paymentsEnabled()) {
+    return jsonError("Los cobros de la plataforma están desactivados en la beta.", 403);
+  }
   if (!isPhaseEnabled(2)) {
     return jsonError("Escrow de garantía disponible en Fase 2. Contacta soporte.", 503);
   }

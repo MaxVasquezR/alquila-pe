@@ -1,10 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { canTransact, getSessionUser } from "@/lib/auth";
+import { canTransact, getSessionUser, isAdmin } from "@/lib/auth";
 import { itemSchema, parseJsonArray } from "@/lib/validations";
 import { obfuscateLocation } from "@/lib/peru";
 import { consumeRateLimit, logAudit } from "@/lib/security";
 import { suggestedDeposit } from "@/lib/utils";
-import { expireBoostedItems, syncPremiumExpiry } from "@/lib/payments/fulfillment";
+import { expireBoostedItems, recordPendingPayment, syncPremiumExpiry } from "@/lib/payments/fulfillment";
+import { createCheckoutPreference, productPricing } from "@/lib/payments/mercadopago";
+import { paymentsEnabled } from "@/lib/payments/config";
 import { assertOwnerCanPublish } from "@/lib/business-rules";
 import { fromZod, jsonError } from "@/lib/http";
 import { NextResponse } from "next/server";
@@ -32,6 +34,7 @@ export async function GET(req: Request) {
           : {},
         categoria ? { categoria } : {},
         distrito ? { distrito } : {},
+        { publicado: true },
       ],
     },
     include: {
@@ -100,6 +103,8 @@ export async function POST(req: Request) {
     const garantia =
       body.garantiaSugeridaSoles > 0 ? body.garantiaSugeridaSoles : suggestedDeposit(body.valorEstimadoSoles);
 
+    const chargeListing = paymentsEnabled() && !isAdmin(user);
+
     const item = await prisma.item.create({
       data: {
         titulo: body.titulo,
@@ -118,6 +123,7 @@ export async function POST(req: Request) {
         accesorios: JSON.stringify(body.accesorios),
         serialOIdentificador: body.serialOIdentificador || null,
         userId: user.id,
+        publicado: !chargeListing,
       },
     });
 
@@ -128,7 +134,44 @@ export async function POST(req: Request) {
       entidadId: item.id,
     });
 
-    return NextResponse.json({ ok: true, id: item.id });
+    if (!chargeListing) {
+      return NextResponse.json({ ok: true, id: item.id, publicado: true });
+    }
+
+    try {
+      const { soles, title } = productPricing("LISTING_FEE");
+      const payment = await recordPendingPayment({
+        userId: user.id,
+        tipo: "LISTING_FEE",
+        montoSoles: soles,
+        itemId: item.id,
+      });
+      const checkout = await createCheckoutPreference({
+        product: "LISTING_FEE",
+        title,
+        unitPrice: soles,
+        quantity: 1,
+        userId: user.id,
+        itemId: item.id,
+        externalReference: payment.id,
+      });
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: { mpPreferenceId: checkout.preferenceId ?? undefined },
+      });
+      return NextResponse.json({
+        ok: true,
+        id: item.id,
+        publicado: false,
+        initPoint: checkout.initPoint,
+        paymentId: payment.id,
+      });
+    } catch (err) {
+      return jsonError(
+        err instanceof Error ? err.message : "No se pudo iniciar el pago. El borrador quedó en tu perfil.",
+        502,
+      );
+    }
   } catch (e) {
     if (e instanceof ZodError) return fromZod(e);
     return jsonError("No se pudo publicar el anuncio.", 500);

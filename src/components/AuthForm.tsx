@@ -94,15 +94,14 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
       >
         {loading ? "Procesando..." : mode === "login" ? "Entrar" : "Crear cuenta"}
       </button>
-      <div className="rounded-xl bg-ink-50 p-3 text-xs leading-5 text-ink-700">
-        <p className="font-bold">Cuentas demo · contraseña Demo2026!</p>
-        <p>admin@alquila.pe — panel /admin</p>
-        <p>luis.vargas@alquila.pe — arrendatario (firma DNI 1450)</p>
-        <p>maria.torres@alquila.pe — dueña, sillas activas (1239)</p>
-        <p>carlos.mendoza@alquila.pe — dueño, devolución taladro (1235)</p>
-        <p>diego.ramirez@alquila.pe — acepta la PS5 (1458)</p>
-        <p>rosa.huaman@alquila.pe — sin verificar (bloqueo anti-estafa)</p>
-      </div>
+      {process.env.NODE_ENV !== "production" ? (
+        <div className="rounded-xl bg-ink-50 p-3 text-xs leading-5 text-ink-700">
+          <p className="font-bold">Solo local · cuentas demo · contraseña Demo2026!</p>
+          <p>admin@alquila.pe — panel /admin</p>
+          <p>luis.vargas@alquila.pe — arrendatario</p>
+          <p>maria.torres@alquila.pe — dueña</p>
+        </div>
+      ) : null}
       {mode === "login" ? (
         <p className="text-center text-sm">
           ¿Nuevo?{" "}

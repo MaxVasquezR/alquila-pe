@@ -9,12 +9,12 @@ export default function PrivacidadPage() {
         <li>Identidad: nombres, apellidos, DNI, correo, celular, distrito.</li>
         <li>Transaccional: solicitudes, actas, fotos de evidencia, reseñas.</li>
         <li>Técnicos: logs de auditoría, hash de IP en registro, cookies de sesión.</li>
-        <li>Pagos: referencias Mercado Pago (no almacenamos números completos de tarjeta).</li>
+        <li>Pagos: referencias Mercado Pago del fee de publicación y servicios opcionales (no almacenamos números completos de tarjeta).</li>
       </ul>
       <h2 className="font-display text-2xl mt-6">Finalidad</h2>
       <p>
-        Verificar identidad, facilitar alquileres P2P, prevenir estafas, cobrar servicios de la
-        plataforma y cumplir obligaciones legales.
+        Verificar identidad declarada, facilitar alquileres P2P, prevenir estafas, cobrar el fee de
+        publicación y cumplir obligaciones legales.
       </p>
       <h2 className="font-display text-2xl mt-6">No publicamos</h2>
       <p>

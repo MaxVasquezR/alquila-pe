@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       where: { id: body.itemId },
       include: { user: true },
     });
-    if (!item || !item.disponible) return jsonError("Este bien no está disponible.");
+    if (!item || !item.disponible || !item.publicado) return jsonError("Este bien no está disponible.");
     if (item.userId === user.id) return jsonError("No puedes alquilar tu propio bien.");
     if (!item.user.dniVerificado) return jsonError("El dueño aún no está verificado.");
 

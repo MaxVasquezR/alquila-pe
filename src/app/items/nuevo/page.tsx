@@ -23,7 +23,8 @@ export default async function NuevoItemPage() {
     <div className="mx-auto max-w-2xl px-4 py-12">
       <h1 className="font-display text-4xl">Publicar un bien</h1>
       <p className="mt-2 text-ink-400">
-        La dirección exacta no se guarda. Solo distrito + zona referencial y un punto aproximado a 500 m.
+        Fee de publicación vía Mercado Pago. La dirección exacta no se guarda: solo distrito, zona
+        referencial y un punto aproximado a 500 m.
       </p>
       <div className="mt-6">
         <PublishForm defaultDistrito={user.distrito} />

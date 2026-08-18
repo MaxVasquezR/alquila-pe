@@ -8,6 +8,9 @@ import { VerifiedExchangeBadge } from "@/components/VerifiedExchangeBadge";
 import { KycRequestForm } from "@/components/KycRequestForm";
 import { parseJsonArray } from "@/lib/validations";
 import { ItemCard } from "@/components/ItemCard";
+import { ListingPayButton } from "@/components/PaymentButtons";
+import { soles } from "@/lib/utils";
+import { PRICING } from "@/lib/payments/config";
 import {
   ownerNeedsKyc,
   ownerHasPendingKyc,
@@ -135,10 +138,15 @@ export default async function PerfilPage() {
       )}
       <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
-          <ItemCard
-            key={item.id}
-            item={{ ...item, fotos: parseJsonArray(item.fotos) }}
-          />
+          <div key={item.id} className="space-y-2">
+            {!item.publicado ? (
+              <p className="rounded-xl bg-gold-200/40 px-3 py-2 text-xs font-semibold text-ink-900">
+                Borrador · paga {soles(PRICING.listing.soles)} para que salga en el catálogo
+              </p>
+            ) : null}
+            <ItemCard item={{ ...item, fotos: parseJsonArray(item.fotos) }} />
+            {!item.publicado ? <ListingPayButton itemId={item.id} /> : null}
+          </div>
         ))}
       </div>
     </div>

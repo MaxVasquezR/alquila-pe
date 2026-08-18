@@ -63,7 +63,7 @@ export function ActaForm({
       </p>
       {tipo === "DEVOLUCION" && (
         <p className="rounded-xl bg-forest-50 px-3 py-2 text-xs text-forest-800">
-          {WEDGE.garantiaAlquila} La liberación es automática al firmar ambas partes sin daño grave.
+          {WEDGE.garantiaAlquila} Registren el monto y quién lo retiene en el acta.
         </p>
       )}
       <select name="conditionGrade" className="w-full rounded-xl border px-3 py-2.5 text-sm">

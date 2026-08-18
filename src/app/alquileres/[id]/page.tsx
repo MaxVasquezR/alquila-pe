@@ -11,7 +11,7 @@ import { ReviewForm } from "@/components/ReviewForm";
 import { SecurityBadge } from "@/components/SecurityBadge";
 import { CONDITION_LABEL, GARANTIA_LABEL, type ConditionGrade, type GarantiaEstado, type RentalStatus } from "@/lib/types";
 import { puntosSeguros } from "@/lib/peru";
-import { isPhaseEnabled } from "@/lib/payments/config";
+import { isPhaseEnabled, paymentsEnabled } from "@/lib/payments/config";
 import { EscrowPayButton } from "@/components/EscrowPayButton";
 import { ProtocolFeeButton } from "@/components/PaymentButtons";
 import { ExchangeTimeline } from "@/components/ExchangeTimeline";
@@ -96,7 +96,7 @@ export default async function RentalDetailPage({ params }: { params: { id: strin
 
       {status === "DISPUTED" && (
         <div className="mt-6 rounded-2xl bg-danger-50 p-4 text-sm text-danger-600">
-          Disputa: {rental.disputaMotivo}. La garantía permanece en custodia Alquila hasta resolución.
+          Disputa: {rental.disputaMotivo}. Sigue el protocolo de acta; no entregues más bienes hasta resolver.
         </div>
       )}
 
@@ -142,7 +142,8 @@ export default async function RentalDetailPage({ params }: { params: { id: strin
         </p>
       )}
 
-      {escrowEnabled &&
+      {paymentsEnabled() &&
+        escrowEnabled &&
         escrowRequired &&
         role === "RENTER" &&
         rental.status === "ACCEPTED" &&
@@ -186,7 +187,7 @@ export default async function RentalDetailPage({ params }: { params: { id: strin
         />
       </div>
 
-      {status === "COMPLETED" && !rental.protocolFeePaid && role === "RENTER" && (
+      {paymentsEnabled() && status === "COMPLETED" && !rental.protocolFeePaid && role === "RENTER" && (
         <div className="mt-4 rounded-2xl bg-gold-200/30 p-4">
           <p className="text-sm">Fee de protocolo pendiente por este intercambio cerrado.</p>
           <div className="mt-2">

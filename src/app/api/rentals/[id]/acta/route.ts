@@ -158,14 +158,21 @@ export async function POST(req: Request, { params }: { params: { id: string } })
           }),
         ]);
         if (!rental.protocolFeePaid) {
-          const { recordPendingPayment } = await import("@/lib/payments/fulfillment");
-          const { PRICING } = await import("@/lib/payments/config");
-          await recordPendingPayment({
-            userId: rental.renterId,
-            tipo: "PROTOCOL_FEE",
-            montoSoles: PRICING.protocolFee.soles,
-            rentalId: rental.id,
-          });
+          const { paymentsEnabled, PRICING } = await import("@/lib/payments/config");
+          if (paymentsEnabled()) {
+            const { recordPendingPayment } = await import("@/lib/payments/fulfillment");
+            await recordPendingPayment({
+              userId: rental.renterId,
+              tipo: "PROTOCOL_FEE",
+              montoSoles: PRICING.protocolFee.soles,
+              rentalId: rental.id,
+            });
+          } else {
+            await prisma.rental.update({
+              where: { id: rental.id },
+              data: { protocolFeePaid: true },
+            });
+          }
         }
         if (rental.escrowStatus === "HELD" && !damaged) {
           const { releaseEscrowForRental } = await import("@/lib/payments/escrow-release");

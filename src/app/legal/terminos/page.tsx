@@ -4,20 +4,26 @@ export default function TerminosPage() {
   return (
     <LegalLayout title="Términos y Condiciones">
       <p><strong>Última actualización:</strong> agosto 2026</p>
+      <p>
+        <strong>Beta pública.</strong> Alquila es una plataforma digital en prueba operada en Lima
+        Metropolitana. No es una sociedad anónima constituida ni emite comprobantes SUNAT en esta
+        etapa. Al usar el servicio aceptas estos términos.
+      </p>
       <h2 className="font-display text-2xl mt-6">1. Intermediación</h2>
       <p>
-        Alquila S.A.C. (RUC pendiente de registro en producción) actúa como intermediario digital
-        entre personas naturales que desean alquilar bienes muebles en Lima Metropolitana. Alquila
-        no es arrendador, no es propietario del inventario publicado y, en Fase 1, no custodia el
-        dinero del alquiler ni de la garantía entre las partes.
+        Alquila actúa como intermediario digital entre personas naturales que desean alquilar bienes
+        muebles. No es arrendador ni propietario del inventario. No custodia el dinero del alquiler
+        diario ni de la garantía entre las partes. Cobramos un <strong>fee de publicación</strong>{" "}
+        por cada anuncio que sale al catálogo, vía Mercado Pago.
       </p>
       <h2 className="font-display text-2xl mt-6">2. Moneda</h2>
       <p>Todos los montos se expresan en Soles peruanos (S/.).</p>
       <h2 className="font-display text-2xl mt-6">3. Verificación de identidad</h2>
       <p>
-        El usuario declara que su DNI y celular son verídicos. Publicar, solicitar alquileres o
-        desbloquear WhatsApp requiere verificación. Alquila puede suspender cuentas con reportes
-        graves o 3 strikes.
+        El usuario declara que su DNI y celular son verídicos. La verificación es declarativa
+        (confirmación de los datos registrados y código al celular o correo): no es consulta a
+        RENIEC. Publicar, solicitar alquileres o desbloquear WhatsApp requiere esa confirmación.
+        Alquila puede suspender cuentas con reportes graves o 3 strikes.
       </p>
       <h2 className="font-display text-2xl mt-6">4. Ubicación</h2>
       <p>
@@ -31,16 +37,13 @@ export default function TerminosPage() {
         dígitos del DNI. No sustituyen asesoría legal ni contratos notariales cuando el valor lo
         requiera.
       </p>
-      <h2 className="font-display text-2xl mt-6">6. Pagos a la plataforma</h2>
+      <h2 className="font-display text-2xl mt-6">6. Pagos</h2>
       <p>
-        Destacados, membresía Premium y fee de protocolo se cobran vía Mercado Pago. Los pagos del
-        alquiler diario entre usuarios son responsabilidad de las partes (Yape/Plin/efectivo).
-      </p>
-      <h2 className="font-display text-2xl mt-6">6b. Custodia de garantía</h2>
-      <p>
-        Alquila retiene la garantía del arrendatario como intermediario en custodia (Fase 2+). No es
-        arrendador del bien. La garantía se libera al arrendatario al cerrar la devolución con acta
-        firmada por ambas partes, salvo disputa por daño grave resuelta conforme al protocolo.
+        Publicar un anuncio en el catálogo cuesta el fee vigente (hoy S/ 9.90) pagado por el dueño
+        vía Mercado Pago. El anuncio no es público hasta que el pago esté aprobado. Destacados y
+        membresía Premium son opcionales. Los pagos del alquiler diario y de la garantía entre
+        usuarios son responsabilidad exclusiva de las partes (Yape/Plin/efectivo) y se registran en
+        el acta. Alquila no retiene esos fondos.
       </p>
       <h2 className="font-display text-2xl mt-6">7. Limitación de responsabilidad</h2>
       <p>

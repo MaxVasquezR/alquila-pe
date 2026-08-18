@@ -45,7 +45,10 @@ export function ExchangeTimeline({
       detail: accepted ? "Solicitud confirmada." : "Esperando respuesta del dueño.",
       state: accepted ? "done" : status === "REQUESTED" ? "current" : "locked",
     },
-    {
+  ];
+
+  if (escrowRequired) {
+    steps.push({
       label: "Garantía en custodia Alquila",
       detail: escrowDone
         ? escrowReleased
@@ -53,12 +56,17 @@ export function ExchangeTimeline({
           : "Depositada en cuenta Alquila."
         : "Arrendatario debe depositar antes de WhatsApp y entrega.",
       state: !accepted ? "locked" : escrowDone ? "done" : "current",
-    },
+    });
+  }
+
+  steps.push(
     {
       label: "WhatsApp auditado",
       detail: waOk
         ? "Coordinación con mensaje y código ALQ."
-        : "Disponible después de depositar la garantía.",
+        : escrowRequired
+          ? "Disponible después de depositar la garantía."
+          : "Disponible cuando el dueño acepta la solicitud.",
       state: !accepted ? "locked" : waOk ? "done" : escrowDone ? "current" : "locked",
     },
     {
@@ -71,13 +79,15 @@ export function ExchangeTimeline({
       detail: completed ? "Intercambio verificado." : WEDGE.garantiaAlquila,
       state: completed ? "done" : devolucionFirmada ? "current" : handoverDone ? "current" : "locked",
     },
-  ];
+  );
 
   return (
     <section className="rounded-2xl bg-white p-4 sm:p-5 shadow-card">
       <p className="text-xs font-bold uppercase tracking-wider text-gold-700">Protocolo del intercambio</p>
       <p className="mt-1 text-sm text-ink-400">
-        Garantía en Alquila → WhatsApp → encuentro → acta → liberación automática.
+        {escrowRequired
+          ? "Garantía en Alquila → WhatsApp → encuentro → acta."
+          : "Aceptación → WhatsApp → encuentro público → acta de entrega y devolución."}
       </p>
       <ol className="mt-4 space-y-3">
         {steps.map((s, i) => (

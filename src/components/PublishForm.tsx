@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CATEGORIAS, DISTRITOS_LIMA, puntosSeguros } from "@/lib/peru";
-import { suggestedDeposit } from "@/lib/utils";
+import { suggestedDeposit, soles } from "@/lib/utils";
+import { PRICING } from "@/lib/payments/config";
 
 export function PublishForm({ defaultDistrito }: { defaultDistrito: string }) {
   const router = useRouter();
@@ -59,11 +60,19 @@ export function PublishForm({ defaultDistrito }: { defaultDistrito: string }) {
       setError(data.error ?? "No se pudo publicar");
       return;
     }
+    if (data.initPoint) {
+      window.location.href = data.initPoint;
+      return;
+    }
     router.push(`/items/${data.id}`);
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4 rounded-2xl bg-white p-6 shadow-card">
+      <p className="rounded-xl bg-forest-50 px-3 py-2 text-sm text-forest-800">
+        Publicar cuesta {soles(PRICING.listing.soles)} vía Mercado Pago. El anuncio sale al catálogo
+        cuando el pago está aprobado. El alquiler diario lo cobran ustedes (Yape/Plin).
+      </p>
       <input name="titulo" required minLength={8} placeholder="Título claro (marca + modelo)" className="w-full rounded-xl border px-3 py-2" />
       <textarea name="descripcion" required minLength={40} placeholder="Estado, uso, qué incluye, reglas. Mínimo 40 caracteres." className="h-28 w-full rounded-xl border px-3 py-2" />
       <div className="grid gap-3 sm:grid-cols-2">
@@ -177,7 +186,7 @@ export function PublishForm({ defaultDistrito }: { defaultDistrito: string }) {
       </div>
       {error ? <p className="text-sm text-danger-600">{error}</p> : null}
       <button className="rounded-full bg-forest-800 px-5 py-2.5 text-sm font-bold text-white">
-        Publicar con ubicación ofuscada
+        Pagar {soles(PRICING.listing.soles)} y publicar
       </button>
     </form>
   );

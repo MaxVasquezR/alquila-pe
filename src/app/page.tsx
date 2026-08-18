@@ -34,6 +34,7 @@ export default async function HomePage({
           : {},
         categoria ? { categoria } : {},
         distrito ? { distrito } : {},
+        { publicado: true },
       ],
     },
     include: {
@@ -64,7 +65,7 @@ export default async function HomePage({
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 lg:grid-cols-[1.2fr_0.8fr] lg:py-20">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-gold-400">
-              Lima primero · Soles (S/.)
+              Beta Lima · Soles (S/.)
             </p>
             <h1 className="mt-3 font-display text-3xl leading-[1.05] sm:text-6xl">
               {WEDGE.headline}
@@ -89,8 +90,8 @@ export default async function HomePage({
             {[
               {
                 icon: ShieldCheck,
-                t: "Identidad peruana",
-                d: "DNI de 8 dígitos + celular 9xxxxxxx. Sin verificación no hay trato.",
+                t: "Identidad declarada",
+                d: "DNI de 8 dígitos + celular 9xxxxxxx. Confirmas tus datos; no es consulta RENIEC. Sin eso no hay trato.",
               },
               {
                 icon: MapPinned,
@@ -105,7 +106,7 @@ export default async function HomePage({
               {
                 icon: Lock,
                 t: "WhatsApp en el momento correcto",
-                d: "No hay celular en el anuncio. Tras aceptación: deposita garantía en Alquila, luego WhatsApp auditado.",
+                d: "No hay celular en el anuncio. Tras la aceptación del dueño: WhatsApp auditado para coordinar la plaza pública.",
               },
             ].map((x) => (
               <div key={x.t} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
@@ -129,9 +130,25 @@ export default async function HomePage({
           </div>
         </div>
         {cards.length === 0 ? (
-          <p className="mt-10 rounded-2xl bg-white p-8 text-center text-ink-400">
-            No hay resultados con esos filtros. Prueba otro distrito o categoría.
-          </p>
+          q || categoria || distrito ? (
+            <p className="mt-10 rounded-2xl bg-white p-8 text-center text-ink-400">
+              No hay resultados con esos filtros. Prueba otro distrito o categoría.
+            </p>
+          ) : (
+            <div className="mt-10 rounded-2xl bg-white p-8 text-center shadow-card">
+              <p className="font-display text-2xl text-forest-800">Aún no hay anuncios públicos</p>
+              <p className="mt-2 text-sm text-ink-400">
+                Sé de los primeros dueños en Lima. Publicar un anuncio cuesta S/ 9.90 y sale al
+                catálogo al pagar. El alquiler diario lo cobras tú.
+              </p>
+              <Link
+                href="/items/nuevo"
+                className="mt-6 inline-flex rounded-full bg-forest-800 px-5 py-2.5 text-sm font-bold text-white"
+              >
+                Publicar el primer bien
+              </Link>
+            </div>
+          )
         ) : (
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {cards.map((item) => (
